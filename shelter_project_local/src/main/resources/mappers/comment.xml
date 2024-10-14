@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.shelter_project.infoBoard.CommentMapper">
+		
+	<insert id="addComment">
+		insert into comments values(comments_seq.nextval,#{postNo},#{content},#{author},
+		#{createdDate},#{createdDate},#{parentNo},#{orderNumber},null)
+	</insert>
+	
+	<insert id="addPerComment">
+		insert into comments values(comments_seq.nextval,null,#{content},#{author},
+		#{createdDate},#{createdDate},#{parentNo},#{orderNumber},#{animal_no})
+	</insert>
+	
+	<select id="getComments">
+		select * from comments where postNo = #{postNo} ORDER BY orderNumber ASC, commentNo ASC
+	</select>
+	
+	<select id="getPerComments">
+		select * from comments where animal_no = #{animal_no} ORDER BY orderNumber ASC, commentNo ASC
+	</select>
+	
+	<select id="getCount">
+		<choose>
+			<when test="type=='info'">
+				select count(*) from comments where postNo = #{no}		
+			</when>
+			
+			<when test="type=='per'">
+				select count(*) from comments where animal_no = #{no}
+			</when>
+		</choose>
+	</select>
+	
+	<select id="getMaxOrderNumber">
+		<choose>
+			<when test="type=='info'">
+				select NVL(MAX(orderNumber),0)
+				from comments
+				where postNo = #{no}			
+			</when>
+			
+			<when test="type=='per'">
+				select NVL(MAX(orderNumber),0)
+				from comments
+				where animal_no = #{no}
+			</when>
+		</choose>
+	</select>
+	
+	<select id="getOrderNumber">
+		select orderNumber
+		from comments
+		where commentNo = #{commentNo}
+	</select>
+	
+	<delete id="deleteComment">
+		delete from comments where commentNo=#{commentNo} or parentNo = #{commentNo}
+	</delete>
+	
+	<update id="updateComment">
+		update comments set 
+		content = #{content}
+		where commentNo = #{commentNo}
+	</update>
+</mapper>
